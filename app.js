@@ -15,7 +15,7 @@ function render(id) {
     app.children[2].innerHTML = "";
     app.children[3].innerHTML = "";
     loading.classList.remove("hidden")
-    fetch('https://script.google.com/macros/s/AKfycbwQpBLFSTDFbzIezy25lZdCGlBPly0Og5-8874psA1hZVRogVVAu6zAQiGN8a8hRhlO9g/exec')
+    fetch('https://script.google.com/macros/s/AKfycbzTb3fvxFDIJZ4gPo27peZkO1nXsI6HvEf3S5cnqYemdfzs5XL_91m_pxneRNL301Pu/exec')
         .then(response => response.json())
         .then(data => {
             let selectedData = data.find(obj => obj.id === id);
@@ -71,5 +71,5 @@ function goToNext() {
         render(currentPost + 1);
     }
 }
-numberOfPosts("https://script.google.com/macros/s/AKfycbxyYYtYFilVsl8Q76VqQoNCHkLVN2oTzAmwstGIs9wfHiQB_CxV5IekF1X5jm06HHC3tg/exec");
+numberOfPosts("https://script.google.com/macros/s/AKfycbzTb3fvxFDIJZ4gPo27peZkO1nXsI6HvEf3S5cnqYemdfzs5XL_91m_pxneRNL301Pu/exec");
 // console.log(postsNum)
