@@ -21,9 +21,9 @@ function render(id) {
             let selectedData = data.find(obj => obj.id === id);
             console.log(selectedData);
             loading.classList.add("hidden")
-            app.children[1].innerHTML = selectedData.Title;
-            app.children[2].innerHTML = ` By: ` + selectedData.By;
-            app.children[3].innerHTML = selectedData.Content;
+            app.children[1].innerHTML = selectedData.SSM;
+            app.children[2].innerHTML = ` By: ` + selectedData.SST;
+            app.children[3].innerHTML = selectedData.SS5;
             currentPost = id;
             isLoading = false;
             checkStatus(id);
