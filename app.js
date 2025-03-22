@@ -1,75 +1,42 @@
-let postsNum;
-let currentPost = postsNum;
-let app = document.querySelector(".app");
-let prev = document.querySelector(".prev");
-let next = document.querySelector(".next");
-let loading = document.querySelector(".loading");
-let isLoading = true;
-function render(id) {
-    if (isLoading === false) {
-        prev.classList.add("disabled");
-        next.classList.add("disabled");
-        isLoading=true;
-    } 
-    app.children[1].innerHTML = "";
-    app.children[2].innerHTML = "";
-    app.children[3].innerHTML = "";
-    loading.classList.remove("hidden")
-    fetch('https://script.google.com/macros/s/AKfycbzTb3fvxFDIJZ4gPo27peZkO1nXsI6HvEf3S5cnqYemdfzs5XL_91m_pxneRNL301Pu/exec')
-        .then(response => response.json())
-        .then(data => {
-            let selectedData = data.find(obj => obj.id === id);
-            console.log(selectedData);
-            loading.classList.add("hidden")
-            app.children[1].innerHTML = selectedData.SSM;
-            app.children[2].innerHTML = ` By: ` + selectedData.SST;
-            app.children[3].innerHTML = selectedData.SS5;
-            currentPost = id;
-            isLoading = false;
-            checkStatus(id);
-        })
-        .catch(error => console.error(error));
+// Replace with your actual Spreadsheet ID
+const spreadsheetId = '1FABCdEXAMPLE_URL_GOESHERE';
 
-}
+// Replace with your API Key
+const apiKey = 'YOUR_GOOGLE_API_KEY';
 
-function checkStatus(id) {
-    if (id === 1) {
-        prev.classList.add("disabled");
-        console.log("No previous!")
-    } else if (id !== 1 && prev.classList.contains("disabled")) {
-        prev.classList.remove("disabled");
-    }
+// Construct the URL for Google Sheets API v4
+const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/Sheet1?key=${apiKey}`;
 
-    if (id === postsNum) {
-        next.classList.add("disabled");
-        console.log("No next!")
-    } else if (id < postsNum && next.classList.contains("disabled")) {
-        next.classList.remove("disabled");
+async function fetchGoogleSheetData() {
+    try {
+        // Fetch data from Google Sheets API
+        const response = await fetch(url);
+        const data = await response.json();
+        
+        // Extract rows from the data
+        const rows = data.values;
+
+        // Get the table body element
+        const tableBody = document.querySelector('#data-table tbody');
+
+        // Loop through the rows (starting from row 1 to skip headers)
+        for (let i = 1; i < rows.length; i++) {
+            const row = document.createElement('tr');
+            
+            // Loop through each cell in the row and create a table cell for each
+            rows[i].forEach(cell => {
+                const cellElement = document.createElement('td');
+                cellElement.textContent = cell;
+                row.appendChild(cellElement);
+            });
+            
+            // Append the row to the table
+            tableBody.appendChild(row);
+        }
+    } catch (error) {
+        console.error('Error fetching Google Sheets data:', error);
     }
 }
 
-function numberOfPosts(LENGTH_API) {
-    fetch(LENGTH_API)
-        .then(response => response.json())
-        .then(data => {
-            postsNum = data - 1
-            console.log(postsNum);
-            render(postsNum);
-        })
-}
-function goToPrevious() {
-
-    if (currentPost !== 1) {
-        checkStatus(currentPost - 1);
-        render(currentPost - 1);
-    }
-}
-
-function goToNext() {
-    if (currentPost !== postsNum) {
-        checkStatus(currentPost + 1);
-        render(currentPost + 1);
-    }
-}
-numberOfPosts("https://script.google.com/macros/s/AKfycbzTb3fvxFDIJZ4gPo27peZkO1nXsI6HvEf3S5cnqYemdfzs5XL_91m_pxneRNL301Pu/exec");
-// console.log(postsNum)
+// Call the function to fetch and display data
+document.addEventListener('DOMContentLoaded', fetchGoogleSheetData);
