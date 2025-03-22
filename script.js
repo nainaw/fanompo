@@ -1,11 +1,11 @@
 // Replace with your actual Spreadsheet ID
-const spreadsheetId = '1FABCdEXAMPLE_URL_GOESHERE';
+const spreadsheetId = '1O4gm7x7dR8dfzUbs8UnQ6o0ykzA6Oa_DZ6NEfQDfLKE';
 
 // Replace with your API Key
-const apiKey = 'YOUR_GOOGLE_API_KEY';
+const apiKey = 'AIzaSyCmERnqacZ3WTdnvTL5IrfWyjoM48U7STI';
 
 // Construct the URL for Google Sheets API v4
-const url = `https://sheets.googleapis.com/v4/spreadsheets/1O4gm7x7dR8dfzUbs8UnQ6o0ykzA6Oa_DZ6NEfQDfLKE/values/API?alt=json&key=AIzaSyCmERnqacZ3WTdnvTL5IrfWyjoM48U7STI`;
+const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/Sheet1?key=${apiKey}`;
 
 async function fetchGoogleSheetData() {
     try {
