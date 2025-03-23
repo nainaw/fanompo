@@ -5,7 +5,7 @@ const spreadsheetId = '1O4gm7x7dR8dfzUbs8UnQ6o0ykzA6Oa_DZ6NEfQDfLKE';
 const apiKey = 'AIzaSyCmERnqacZ3WTdnvTL5IrfWyjoM48U7STI';
 
 // Construct the URL for Google Sheets API v4
-const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/Sheet1?key=${apiKey}`;
+const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/API?key=${apiKey}`;
 
 async function fetchGoogleSheetData() {
     try {
