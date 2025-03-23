@@ -8,44 +8,6 @@
   <h1>Google Sheets Data</h1> 
   <table id="sheetData"></table> 
  
-  <script> 
-    // Replace these with your own values 
-    var CLIENT_ID = '1jCaJigMqi3sSmw1Y13ZV0wCmRQZ3PF3YkD4MCu_cyDs'; 
-    var API_KEY = 'AIzaSyCmERnqacZ3WTdnvTL5IrfWyjoM48U7STI'; 
-    var SHEET_ID = 'APIC'; 
-    var RANGE = 'APIC!A1:O4'; // Replace with your sheet name and range 
- 
-    function loadData() { 
-      gapi.client.init({ 
-        apiKey: API_KEY, 
-        clientId: CLIENT_ID, 
-        discoveryDocs: ["https://sheets.googleapis.com/$discovery/rest?version=v4"], 
-        scope: "https://www.googleapis.com/auth/spreadsheets.readonly" 
-      }).then(function() { 
-        return gapi.client.sheets.spreadsheets.values.get({ 
-          spreadsheetId: SHEET_ID, 
-          range: RANGE 
-        }); 
-      }).then(function(response) { 
-        var data = response.result.values; 
-        var table = document.getElementById("sheetData"); 
- 
-        // Create table rows from the data 
-        data.forEach(function(row) { 
-          var tr = document.createElement("tr"); 
-          row.forEach(function(cell) { 
-            var td = document.createElement("td"); 
-            td.textContent = cell; 
-            tr.appendChild(td); 
-          }); 
-          table.appendChild(tr); 
-        }); 
-      }, function(error) { 
-        console.error("Error: ", error.result.error.message); 
-      }); 
-    } 
- 
-    gapi.load('client', loadData); 
-  </script> 
+  <script src="script.js"> </script> 
 </body> 
 </html> 
