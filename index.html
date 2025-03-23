@@ -1,31 +1,49 @@
-<html>
-<head></head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Sheets Data Fetch</title>
+    <style>
+        table {
+            width: 50%;
+            margin: 20px auto;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
 <body>
-    <div id="custom-list">
-    <script>
-       $(function() {
-  const url = 'https://drive.google.com/file/d/1G4P0Sxd6BblM5-sZjwEY_ch0yp_ckeKH/view';
+    <h1 style="text-align:center;">Google Sheets Data</h1>
+    <table id="data-table">
+        <thead>
+            <tr>
+                <th>SSM</th>
+                <th>SST</th>
+                <th>SS5</th>
+                <th>SS10</th>
+                <th>CUM</th>
+                <th>CUVK</th>
+                <th>CUVP</th>
+                <th>CUFN</th>
+                <th>CUTA</th>
+                <th>CUTL</th>
+                <th>HARM</th>
+                <th>HARV</th>
+                <th>FTSV</th>
+                <th>FTSH</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
 
-  $.getJSON(url, data => {
-    console.log(data.feed.entry);
-    
-    data.feed.entry.forEach(item => {
-      const post = {
-        SSM: item['gsx$SSM']['$t'],
-        SST: item['gsx$SST']['$t'],
-        SS5: item['gsx$SS5']['$t'],
-      };
-
-      $('#custom-list').append(`
-        <li>
-          <P>"${post.SSM}"</p>
-          <P>${post.SST}</P>
-          <p>${post.SS5}</p>
-        </li>
-    `);
-    });
-  });
-});
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
