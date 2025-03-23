@@ -1,66 +1,42 @@
-let data = new Array();
+/ Replace with your actual Spreadsheet ID
+const spreadsheetId = '1jCaJigMqi3sSmw1Y13ZV0wCmRQZ3PF3YkD4MCu_cyDs';
 
-fetch("https://sheets.googleapis.com/v4/spreadsheets/1O4gm7x7dR8dfzUbs8UnQ6o0ykzA6Oa_DZ6NEfQDfLKE/values/API?alt=json&key=AIzaSyCmERnqacZ3WTdnvTL5IrfWyjoM48U7STI")
-    .then(function(data_answer) {
-        data_answer.json()
-            .then(function(data_json) {
-                let array_row = 1;
-                let row_content = [];
+// Replace with your API Key
+const apiKey = 'AIzaSyCmERnqacZ3WTdnvTL5IrfWyjoM48U7STI';
 
-                content_data = data_json.feed.entry;
+// Construct the URL for Google Sheets API v4
+const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/Sheet1?key=${apiKey}`;
 
-                // finds the contetent data ant pushes it into data array
-                for (let i = 0; i < content_data.length; i++) {
-                    if (array_row == content_data[i].gs$cell.row) {
-                        row_content.push(content_data[i].content.$t);
-                        if (i == content_data.length - 1) {
-                            data.push(row_content);
-                        }
-                    } else {
-                        data.push(row_content);
-                        array_row = content_data[i].gs$cell.row;
-                        row_content = [];
-                        row_content.push(content_data[i].content.$t);
-                    }
-                }
+async function fetchGoogleSheetData() {
+    try {
+        // Fetch data from Google Sheets API
+        const response = await fetch(url);
+        const data = await response.json();
+        
+        // Extract rows from the data
+        const rows = data.values;
 
-                // console.log(data);
-                generateTable(data);
+        // Get the table body element
+        const tableBody = document.querySelector('#data-table tbody');
 
+        // Loop through the rows (starting from row 1 to skip headers)
+        for (let i = 1; i < rows.length; i++) {
+            const row = document.createElement('tr');
+            
+            // Loop through each cell in the row and create a table cell for each
+            rows[i].forEach(cell => {
+                const cellElement = document.createElement('td');
+                cellElement.textContent = cell;
+                row.appendChild(cellElement);
             });
-    })
-    .catch(function(err) {
-        console.log(err);
-    });
-
-
-function generateTable(data) {
-
-    //Create a HTML Table element.
-    var table = document.createElement("TABLE");
-    table.border = "1";
-
-    //Get the count of columns.
-    var columnCount = data[0].length;
-
-    //Add the header row.
-    var row = table.insertRow(-1);
-    for (var i = 0; i < columnCount; i++) {
-        var headerCell = document.createElement("TH");
-        headerCell.innerHTML = data[0][i];
-        row.appendChild(headerCell);
-    }
-
-    //Add the data rows.
-    for (var i = 1; i < data.length; i++) {
-        row = table.insertRow(-1);
-        for (var j = 0; j < columnCount; j++) {
-            var cell = row.insertCell(-1);
-            cell.innerHTML = data[i][j];
+            
+            // Append the row to the table
+            tableBody.appendChild(row);
         }
+    } catch (error) {
+        console.error('Error fetching Google Sheets data:', error);
     }
-
-    var dvTable = document.getElementById("dvTable");
-    dvTable.innerHTML = "";
-    dvTable.appendChild(table);
 }
+
+// Call the function to fetch and display data
+document.addEventListener('DOMContentLoaded', fetchGoogleSheetData);
