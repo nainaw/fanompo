@@ -1,13 +1,23 @@
-<!DOCTYPE html> 
-<html> 
-<head> 
-  <title>Google Sheets Data</title> 
-  <script src="https://apis.google.com/js/api.js"></script> 
-</head> 
-<body> 
-  <h1>Google Sheets Data</h1> 
-  <table id="sheetData"></table> 
- 
-  <script src="script.js"> </script> 
-</body> 
-</html> 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>JavaScript - read JSON from URL</title>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+</head>
+
+<body>
+    <div class="mypanel"></div>
+
+    <script>
+    $.getJSON('http://https://sheets.googleapis.com/v4/spreadsheets/1jCaJigMqi3sSmw1Y13ZV0wCmRQZ3PF3YkD4MCu_cyDs/values/APIC?alt=json&key=AIzaSyCmERnqacZ3WTdnvTL5IrfWyjoM48U7STI', function(data) {
+
+        var text = `Date: ${data.values}<br>
+                    Time: ${data.range}<br>`
+
+
+        $(".mypanel").html(text);
+    });
+    </script>
+
+</body>
+</html>
