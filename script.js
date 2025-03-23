@@ -24,11 +24,11 @@ async function fetchGoogleSheetData() {
             const row = document.createElement('li');
             
             // Loop through each cell in the row and create a table cell for each
-            rows[i].forEach(cell => {
+            // rows[i].forEach(cell => {
                 //const cellElement = document.createElement('td');
                 //cellElement.textContent = cell;
                 row.appendChild(cell);
-            });
+            // });
             
             // Append the row to the table
             tableBody.appendChild(row);
