@@ -11,16 +11,16 @@
     
     data.feed.entry.forEach(item => {
       const post = {
-        date: item['gsx$date']['$t'],
-        name: item['gsx$name']['$t'],
-        url: item['gsx$imageurl']['$t'],
+        SSM: item['gsx$SSM']['$t'],
+        SST: item['gsx$SST']['$t'],
+        SS5: item['gsx$SS5']['$t'],
       };
 
       $('#custom-list').append(`
         <li>
-          <img src="${post.url}" />
-          <h2>${post.name}</h2>
-          <p>${post.date}</p>
+          <P>"${post.SSM}"</p>
+          <P>${post.SST}</P>
+          <p>${post.SS5}</p>
         </li>
     `);
     });
