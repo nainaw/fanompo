@@ -21,13 +21,13 @@ async function fetchGoogleSheetData() {
 
         // Loop through the rows (starting from row 1 to skip headers)
         for (let i = 1; i < rows.length; i++) {
-            const row = document.createElement('tr');
+            const row = document.createElement('li');
             
             // Loop through each cell in the row and create a table cell for each
             rows[i].forEach(cell => {
-                const cellElement = document.createElement('td');
-                cellElement.textContent = cell;
-                row.appendChild(cellElement);
+                //const cellElement = document.createElement('td');
+                //cellElement.textContent = cell;
+                row.appendChild(cell);
             });
             
             // Append the row to the table
