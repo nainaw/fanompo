@@ -1,0 +1,19 @@
+<html>
+<head></head>
+<body>
+    <script>
+        function fetchJSONData() {
+            fetch('https://drive.google.com/file/d/1G4P0Sxd6BblM5-sZjwEY_ch0yp_ckeKH/view')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+                    return response.json();  
+                })
+                .then(data => console.log(data))  
+                .catch(error => console.error('Failed to fetch data:', error)); 
+        }
+        fetchJSONData();  
+    </script>
+</body>
+</html>
