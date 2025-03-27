@@ -52,7 +52,7 @@ async function fetchData() {
                 var li = document.createElement("li");  
                 let span1= `${entete[i]} :                         ${item}`;
                 //let span1=`                
-                li.textContent = span1; //entete[i]+" : "+item;
+                li.textContent += span1; //entete[i]+" : "+item;
                 ul.appendChild(li);  
             }
  
