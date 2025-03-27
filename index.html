@@ -50,7 +50,7 @@ async function fetchData() {
             if (i!==0) {
 
                 var li = document.createElement("li");  
-                let span1= `<p><span id="entete">${entete[i]} :      ${item}</span></p>`;
+                let span1= `${entete[i]} :      ${item}`;
                 //let span1=`                
                 li.textContent = span1; //entete[i]+" : "+item;
                 ul.appendChild(li);  
