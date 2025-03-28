@@ -4,76 +4,69 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@materializecss/materialize@1.0.0/dist/css/materialize.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <style>
-        #list-container {
-            margin-left: auto;
-            margin-right: auto;
-   
+th,
+td {
+  border: 2px solid rgb(160 160 160);
+  border-color: #022002
 }
-.bold {
-    font-weight: bold;
+.styled-table {
+    border-collapse: collapse;
+    border: 2px solid rgb(140 140 140);
+    margin: 25px 0;
+    font-size: 1.5em;
+    font-family: sans-serif;
+    min-width: 400px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
 }
-        
+.styled-table thead tr {
+    background-color: #009879;
+    //color: #ffffff;
+    text-align: left;
+}
+.styled-table th,
+.styled-table td {
+    padding: 12px 15px;
+    color:#000000;
+}
+
+
+.styled-table tbody tr:nth-of-type(even) {
+    background-color: #8fd322;
+}
+
+.styled-table tbody tr:last-of-type {
+    border-bottom: 2px solid #8ce0d0;
+}
     </style>
 </head>
 <body>
-    <!-- <div id="list-container"> -->
-        <div id="list-container">        
-        <h1>Anjara Fanompoana Isan-Tsabata</h1>
+        <h2 style="text-align:center;">Anjara Fanompoana Isan-Tsabata</h2>
+        <div id="container">        
         <!-- The fetched data will be populated here -->
+         <br>
+      <table class="styled-table">
+        <tr id="root"></tr>
+      </table>
       </div>
-    <ul class="lists">
-
-    </ul>
-<script>
   
-
-
+<script>
 async function fetchData() {
   try {
-    const response = await fetch("https://sheets.googleapis.com/v4/spreadsheets/1jCaJigMqi3sSmw1Y13ZV0wCmRQZ3PF3YkD4MCu_cyDs/values/APIC?alt=json&key=AIzaSyCmERnqacZ3WTdnvTL5IrfWyjoM48U7STI");
+    const response = await fetch("https://sheets.googleapis.com/v4/spreadsheets/1jCaJigMqi3sSmw1Y13ZV0wCmRQZ3PF3YkD4MCu_cyDs/values/API?alt=json&key=AIzaSyCmERnqacZ3WTdnvTL5IrfWyjoM48U7STI");
     const data = await response.json();
     const listContainer = document.getElementById("list-container");
     const entete=data['values'][0];
-    var h1 = document.createElement('h2');
-        var text="Daty : "+data['values'][1][0];
-        h1.textContent=text;
-        listContainer.appendChild(h1);
-
-    for(let j = 1; j < data['values'].length; j++) {
-        var ul = document.createElement("ul");
-
-        
-        data['values'][j].forEach((item,i) => {  
-            
-            if (i!==0) {
-
-                var li = document.createElement("li");  
-                let span1= `${entete[i]} :                         ${item}`;
-                //let span1=`                
-                li.textContent += span1; //entete[i]+" : "+item;
-                ul.appendChild(li);  
-            }
- 
-
-            i+=1;    
-            
-
+    var root = document.getElementById('root');
+    data['values'].forEach((element,i) => {
+        if (i==0) {root.insertAdjacentHTML('beforebegin', `<thead><tr style="background-color: #009879;    color: #ffffff;
+"><th><b>${element[0]}</b></th><th><b>${element[1]}</b></th><th><b>${element[2]}</b></th><th><b>${element[3]}</b></th></tr></thead>`);}
+        else {
+            root.insertAdjacentHTML('beforebegin', `<tr style="background-color: #8ce0d0;    color: #000000;"><td><b>${element[0]}</b></td><td>${element[1]}</td><td>${element[2]}</td><td>${element[3]}</td></tr>`);
         }
-
-        );
-        listContainer.appendChild(ul);
-  
-        var h1 = document.createElement('h2');
-            var text="Daty : "+data['values'][j+1][0];
-            h1.textContent=text;
-
-            listContainer.appendChild(h1);
-
-
-    }
-
+    })
   } catch (error) {
     console.error("Error fetching data:", error);
   }
