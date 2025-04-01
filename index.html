@@ -33,14 +33,6 @@ td {
 /*.styled-table tr:nth-child(even){
     background-color: green;
 }*/
-.styled-table tr:nth-of-type(2n + 1) {
-  color: red;
-}
-
-/* Even paragraphs */
-.styled-table tr:nth-of-type(2n) {
-  color: blue;
-}     
 
     </style>
 </head>
@@ -66,7 +58,7 @@ async function fetchData() {
         if (i==0) {root.insertAdjacentHTML('beforebegin', `<thead><tr style="background-color: #009879;    color: #ffffff;
 "><th><b>${element[0]}</b></th><th><b>${element[1]}</b></th><th><b>${element[2]}</b></th><th><b>${element[3]}</b></th></tr></thead>`);}
         else {
-            root.insertAdjacentHTML('beforebegin', `<tr class="teal lighten-1"><td><b>${element[0]}</b></td><td>${element[1]}</td><td>${element[2]}</td><td>${element[3]}</td></tr>`);
+            root.insertAdjacentHTML('beforebegin', `<tr><td><b>${element[0]}</b></td><td>${element[1]}</td><td>${element[2]}</td><td>${element[3]}</td></tr>`);
         }
     })
   } catch (error) {
