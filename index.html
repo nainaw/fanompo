@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planning de Service - GitHub</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .container { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); width: 100%; max-width: 900px; position: relative; }
+        
+        .header-flex { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #3498db; padding-bottom: 15px; margin-bottom: 20px; }
+        h2 { color: #2c3e50; margin: 0; font-size: 1.5rem; }
+        #timestamp { font-size: 0.85rem; color: #7f8c8d; font-style: italic; }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th { background: #2c3e50; color: white; padding: 12px; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
+        td { padding: 12px; border-bottom: 1px solid #eee; text-align: center; font-size: 0.95rem; color: #34495e; }
+        
+        .task-name { font-weight: bold; text-align: left; background: #f8f9fa; color: #2c3e50; width: 25%; }
+        
+        .print-btn { background: #27ae60; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.3s; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
+        .print-btn:hover { background: #219150; transform: translateY(-1px); }
+
+        /* PRINT LOGIC: Hide UI elements on paper */
+        @media print {
+            .print-btn, .nav-hint { display: none !important; }
+            body { background: white; padding: 0; }
+            .container { box-shadow: none; border: none; width: 100%; max-width: 100%; padding: 0; }
+            th { background: #000 !important; color: #fff !important; -webkit-print-color-adjust: exact; }
+            .task-name { background: #eee !important; -webkit-print-color-adjust: exact; }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="print-btn" onclick="window.print()">
+        <span>🖨️</span> Imprimer / PDF
+    </button>
+
+    <div class="container">
+        <div class="header-flex">
+            <h2>Planning des Services</h2>
+            <div id="timestamp">Chargement...</div>
+        </div>
+
+        <table id="scheduleTable">
+            </table>
+    </div>
+
+    <script>
+        // REPLACE WITH YOUR QUERY URL (The one with YOUR_ID)
+        const CSV_URL = "https://docs.google.com/spreadsheets/d/1YA0q-J7ArOKkcRS0sz6-2DMz6Hwe18emmJpR2nyyGME/gviz/tq?tqx=out:csv&sheet=Dashboard";
+
+        async function loadSchedule() {
+            try {
+                const response = await fetch(CSV_URL);
+                const data = await response.text();
+                const rows = data.split("\n").map(row => row.split(","));
+                
+                let tableHTML = "";
+                let timestampText = "";
+
+                rows.forEach((row, index) => {
+                    if (row.length < 2) return;
+                    
+                    // Check if this row contains the "Mis à jour le" text
+                    if (row[0].includes("Mis à jour le")) {
+                        timestampText = row[0].replace(/"/g, '');
+                        return; // Don't add this row to the table
+                    }
+
+                    tableHTML += "<tr>";
+                    row.forEach((cell, i) => {
+                        const tag = index === 0 ? "th" : "td";
+                        const className = i === 0 ? "task-name" : "";
+                        let cleanCell = cell.replace(/"/g, '').trim();
+                        tableHTML += `<${tag} class="${className}">${cleanCell}</${tag}>`;
+                    });
+                    tableHTML += "</tr>";
+                });
+
+                document.getElementById("scheduleTable").innerHTML = tableHTML;
+                document.getElementById("timestamp").innerText = timestampText;
+            } catch (error) {
+                document.getElementById("timestamp").innerText = "Erreur de connexion";
+                console.error(error);
+            }
+        }
+        loadSchedule();
+    </script>
+</body>
+</html>
