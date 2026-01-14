@@ -13,13 +13,10 @@
         h2 { color: #2c3e50; margin: 0 0 5px 0; font-size: 1.8rem; text-transform: uppercase; }
         #timestamp { font-size: 0.9rem; color: #7f8c8d; font-style: italic; min-height: 1.2em; }
         table { width: 100%; border-collapse: collapse; table-layout: fixed; }
-        th { background: #2c3e50 !important; color: white !important; padding: 15px; font-size: 0.9rem; -webkit-print-color-adjust: exact; border: 1px solid #34495e; }
-        
-        /* Adjusted widths for longer task names */
+        th { background: #2c3e50 !important; color: white !important; padding: 15px; font-size: 1rem; -webkit-print-color-adjust: exact; border: 1px solid #34495e; }
         th:first-child, td:first-child { width: 25%; }
         th:not(:first-child), td:not(:first-child) { width: 25%; }
-        
-        td { padding: 10px; border: 1px solid #eee; text-align: center; font-size: 0.95rem; color: #34495e; word-wrap: break-word; }
+        td { padding: 12px; border: 1px solid #eee; text-align: center; font-size: 0.95rem; color: #34495e; }
         .task-name { font-weight: bold; text-align: left !important; background: #f8f9fa !important; color: #2c3e50; -webkit-print-color-adjust: exact; }
         tr:nth-child(even) td:not(.task-name) { background-color: #f9fbfd !important; -webkit-print-color-adjust: exact; }
         .print-footer { display: none; }
@@ -43,31 +40,10 @@
             <div id="timestamp"></div>
         </div>
         <table id="scheduleTable"></table>
-        <div class="print-footer">
-            Fanompoana isan-tsabata : https://nainaw.github.io/fanompo/
-        </div>
+        <div class="print-footer">Planning en ligne - Fanompoana isan-tsabata</div>
     </div>
     <script>
-        // Lookup table for full names
-        const taskFullNames = {
-            "SSM": "Mitarika Sek. Sab",
-            "SST": "Tatitra Eran-tany",
-            "SS5": "5 minitra",
-            "SS10": "10 minitra ASAFI",
-            "FTV": "Fitsahoana Vakiteny",
-            "FTH": "Fitsahoana Hira",
-            "CUM": "Mitarika Fot. pivavah",
-            "CUVK": "Vakiteny",
-            "CUVP": "Vavaka Pastoraly",
-            "CUFN": "Fanentanana Fanat.",
-            "CUTA": "Toriteny Ankizy",
-            "CUTL": "Toriteny Lehibe",
-            "HARM": "Mitarika Hariva",
-            "HARF": "Vatsim-panahy"
-        };
-
         const CSV_URL = "https://docs.google.com/spreadsheets/d/1YA0q-J7ArOKkcRS0sz6-2DMz6Hwe18emmJpR2nyyGME/gviz/tq?tqx=out:csv&sheet=Dashboard";
-
         async function loadSchedule() {
             try {
                 const response = await fetch(CSV_URL);
@@ -79,29 +55,20 @@
                     if (row.length < 2) return;
                     let firstCell = row[0].replace(/"/g, '').trim();
                     if (firstCell.toLowerCase().includes("mis à jour le")) {
-                        ts = firstCell;
-                        return; 
+                        ts = firstCell; return; 
                     }
                     tableHTML += "<tr>";
                     row.forEach((cell, i) => {
                         const tag = index === 0 ? "th" : "td";
                         const className = (i === 0 && index !== 0) ? "task-name" : "";
                         let cleanCell = cell.replace(/"/g, '').trim();
-                        
-                        // Replace code with full name if it exists in our lookup table
-                        if (i === 0 && taskFullNames[cleanCell]) {
-                            cleanCell = taskFullNames[cleanCell];
-                        }
-
                         tableHTML += `<${tag} class="${className}">${cleanCell}</${tag}>`;
                     });
                     tableHTML += "</tr>";
                 });
                 document.getElementById("scheduleTable").innerHTML = tableHTML;
                 document.getElementById("timestamp").innerText = ts;
-            } catch (e) {
-                console.error(e);
-            }
+            } catch (e) { console.error(e); }
         }
         loadSchedule();
     </script>
