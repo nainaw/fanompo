@@ -8,40 +8,43 @@
         body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f2f5; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; }
         .print-btn { background: #27ae60; color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: bold; margin-bottom: 15px; }
         
-        /* The Wrapper Fixes Mobile Overflow */
-        .container { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); width: 100%; max-width: 1000px; box-sizing: border-box; }
-        .table-wrapper { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        .container { background: white; padding: 15px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); width: 100%; max-width: 1100px; box-sizing: border-box; }
         
-        .header-flex { display: flex; flex-direction: column; align-items: center; border-bottom: 3px solid #3498db; padding-bottom: 10px; margin-bottom: 15px; }
-        h2 { color: #2c3e50; margin: 0; text-transform: uppercase; font-size: 1.4rem; text-align: center; }
+        /* SCROLL WRAPPER */
+        .table-wrapper { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; position: relative; }
         
-        table { width: 100%; border-collapse: collapse; min-width: 600px; /* Ensures table doesn't get 'squished' too small */ }
-        th { background: #2c3e50 !important; color: white !important; padding: 12px; border: 1px solid #34495e; font-size: 0.9rem; }
-        td { padding: 10px; border: 1px solid #eee; text-align: center; font-size: 0.9rem; color: #34495e; }
+        table { width: 100%; border-collapse: separate; border-spacing: 0; min-width: 800px; }
         
-        .task-name { font-weight: bold; text-align: left !important; background: #f8f9fa !important; width: 30%; }
-
-        /* Mobile Specific Adjustments */
-        @media screen and (max-width: 600px) {
-            h2 { font-size: 1.1rem; }
-            td, th { padding: 8px 4px; font-size: 0.8rem; }
-            .container { padding: 10px; }
+        /* STICKY FIRST COLUMN LOGIC */
+        th:first-child, td:first-child {
+            position: sticky;
+            left: 0;
+            z-index: 10;
+            width: 180px;
+            background-color: #f8f9fa !important;
+            border-right: 2px solid #3498db;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
         }
+
+        th { background: #2c3e50 !important; color: white !important; padding: 15px; border-bottom: 2px solid #34495e; font-size: 0.9rem; z-index: 11; }
+        /* Special z-index for the top-left corner cell */
+        th:first-child { z-index: 12; background: #2c3e50 !important; border-right: 2px solid #3498db; }
+
+        td { padding: 12px; border-bottom: 1px solid #eee; text-align: center; font-size: 0.95rem; }
+        .task-name { font-weight: bold; text-align: left !important; color: #2c3e50; }
+
+        tr:nth-child(even) td { background-color: #fafbfc; }
 
         @media print {
             .print-btn { display: none; }
             .table-wrapper { overflow: visible; }
-            table { min-width: 100%; }
+            th:first-child, td:first-child { position: static; box-shadow: none; border-right: 1px solid #eee; }
         }
     </style>
 </head>
 <body>
-    <button class="print-btn" onclick="window.print()">📥 Imprimer / Enregistrer en PDF</button>
+    <button class="print-btn" onclick="window.print()">📥 Imprimer / PDF</button>
     <div class="container">
-        <div class="header-flex">
-            <h2>Anjara Fanompoana isan-tsabata</h2>
-            <div id="timestamp"></div>
-        </div>
         <div class="table-wrapper">
             <table id="scheduleTable"></table>
         </div>
@@ -56,12 +59,7 @@
                 let tableHTML = "";
                 rows.forEach((row, index) => {
                     const cleanRow = row.filter(cell => cell.replace(/"/g, '').trim() !== "");
-                    if (cleanRow.length < 2) {
-                        if (cleanRow[0] && cleanRow[0].toLowerCase().includes("mis à jour")) {
-                            document.getElementById("timestamp").innerText = cleanRow[0].replace(/"/g, '');
-                        }
-                        return;
-                    }
+                    if (cleanRow.length < 2) return;
                     tableHTML += "<tr>";
                     cleanRow.forEach((cell, i) => {
                         const tag = index === 0 ? "th" : "td";
