@@ -8,15 +8,18 @@
         body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f2f5; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
         .print-btn { background: #27ae60; color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: bold; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: 0.2s; }
         .print-btn:hover { background: #219150; transform: translateY(-2px); }
-        .container { background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); width: 100%; max-width: 950px; }
+        .container { background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); width: 100%; max-width: 1000px; }
         .header-flex { display: flex; flex-direction: column; align-items: center; text-align: center; border-bottom: 3px solid #3498db; padding-bottom: 15px; margin-bottom: 25px; }
         h2 { color: #2c3e50; margin: 0 0 5px 0; font-size: 1.8rem; text-transform: uppercase; }
         #timestamp { font-size: 0.9rem; color: #7f8c8d; font-style: italic; min-height: 1.2em; }
         table { width: 100%; border-collapse: collapse; table-layout: fixed; }
-        th { background: #2c3e50 !important; color: white !important; padding: 15px; font-size: 1rem; -webkit-print-color-adjust: exact; border: 1px solid #34495e; }
-        th:first-child, td:first-child { width: 15%; }
-        th:not(:first-child), td:not(:first-child) { width: 28%; }
-        td { padding: 12px; border: 1px solid #eee; text-align: center; font-size: 1rem; color: #34495e; }
+        th { background: #2c3e50 !important; color: white !important; padding: 15px; font-size: 0.9rem; -webkit-print-color-adjust: exact; border: 1px solid #34495e; }
+        
+        /* Adjusted widths for longer task names */
+        th:first-child, td:first-child { width: 25%; }
+        th:not(:first-child), td:not(:first-child) { width: 25%; }
+        
+        td { padding: 10px; border: 1px solid #eee; text-align: center; font-size: 0.95rem; color: #34495e; word-wrap: break-word; }
         .task-name { font-weight: bold; text-align: left !important; background: #f8f9fa !important; color: #2c3e50; -webkit-print-color-adjust: exact; }
         tr:nth-child(even) td:not(.task-name) { background-color: #f9fbfd !important; -webkit-print-color-adjust: exact; }
         .print-footer { display: none; }
@@ -41,11 +44,30 @@
         </div>
         <table id="scheduleTable"></table>
         <div class="print-footer">
-            Fanompoana isan-tsabata
+            Planning en ligne - Fanompoana isan-tsabata
         </div>
     </div>
     <script>
+        // Lookup table for full names
+        const taskFullNames = {
+            "SSM": "Mitarika Sek. Sab",
+            "SST": "Tatitra Eran-tany",
+            "SS5": "5 minitra",
+            "SS10": "10 minitra ASAFI",
+            "FTV": "Fitsahoana Vakiteny",
+            "FTH": "Fitsahoana Hira",
+            "CUM": "Mitarika Fot. pivavah",
+            "CUVK": "Vakiteny",
+            "CUVP": "Vavaka Pastoraly",
+            "CUFN": "Fanentanana Fanat.",
+            "CUTA": "Toriteny Ankizy",
+            "CUTL": "Toriteny Lehibe",
+            "HARM": "Mitarika Hariva",
+            "HARF": "Vatsim-panahy"
+        };
+
         const CSV_URL = "https://docs.google.com/spreadsheets/d/1YA0q-J7ArOKkcRS0sz6-2DMz6Hwe18emmJpR2nyyGME/gviz/tq?tqx=out:csv&sheet=Dashboard";
+
         async function loadSchedule() {
             try {
                 const response = await fetch(CSV_URL);
@@ -65,6 +87,12 @@
                         const tag = index === 0 ? "th" : "td";
                         const className = (i === 0 && index !== 0) ? "task-name" : "";
                         let cleanCell = cell.replace(/"/g, '').trim();
+                        
+                        // Replace code with full name if it exists in our lookup table
+                        if (i === 0 && taskFullNames[cleanCell]) {
+                            cleanCell = taskFullNames[cleanCell];
+                        }
+
                         tableHTML += `<${tag} class="${className}">${cleanCell}</${tag}>`;
                     });
                     tableHTML += "</tr>";
