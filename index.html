@@ -5,42 +5,75 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fanompoana isan-tsabata</title>
     <style>
+        /* WEB VIEW STYLES */
         body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f2f5; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; }
-        .print-btn { background: #27ae60; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; margin-bottom: 15px; }
-        .container { background: white; padding: 10px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); width: 100%; max-width: 1100px; box-sizing: border-box; }
-        .table-wrapper { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; position: relative; }
         
+        .print-btn { background: #27ae60; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; margin-bottom: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        
+        .container { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); width: 100%; max-width: 1100px; box-sizing: border-box; }
+        
+        /* RESTORED HEADER STYLE */
+        .header-flex { display: flex; flex-direction: column; align-items: center; text-align: center; border-bottom: 3px solid #3498db; padding-bottom: 15px; margin-bottom: 20px; }
+        h2 { color: #2c3e50; margin: 0 0 5px 0; text-transform: uppercase; font-size: 1.6rem; }
+        #timestamp { font-size: 0.9rem; color: #7f8c8d; font-style: italic; }
+
+        /* TABLE & STICKY COLUMN */
+        .table-wrapper { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; position: relative; }
         table { width: 100%; border-collapse: separate; border-spacing: 0; min-width: 700px; }
         
-        /* NARROWER STICKY COLUMN (135px) */
+        th { background: #2c3e50 !important; color: white !important; padding: 15px; border-bottom: 2px solid #34495e; font-size: 0.85rem; -webkit-print-color-adjust: exact; }
+        
+        /* Sticky First Column */
         th:first-child, td:first-child {
             position: sticky;
             left: 0;
             z-index: 10;
-            width: 135px; /* Moved separation to the left */
+            width: 135px;
             background-color: #f8f9fa !important;
             border-right: 2px solid #3498db;
-            font-size: 0.85rem; /* Slightly smaller for fit */
             box-shadow: 2px 0 5px rgba(0,0,0,0.05);
         }
-
-        th { background: #2c3e50 !important; color: white !important; padding: 12px; border-bottom: 2px solid #34495e; font-size: 0.85rem; z-index: 11; }
         th:first-child { z-index: 12; background: #2c3e50 !important; }
 
-        td { padding: 10px; border-bottom: 1px solid #eee; text-align: center; font-size: 0.9rem; }
-        .task-name { font-weight: bold; text-align: left !important; color: #2c3e50; word-wrap: break-word; }
-
+        td { padding: 12px; border-bottom: 1px solid #eee; text-align: center; font-size: 0.9rem; color: #34495e; }
+        .task-name { font-weight: bold; text-align: left !important; color: #2c3e50; }
         tr:nth-child(even) td { background-color: #fafbfc; }
 
+        /* PRINT STYLES - ENSURING HEADERS APPEAR */
         @media print {
+            @page { size: portrait; margin: 1cm; }
+            body { background: white; padding: 0; }
             .print-btn { display: none; }
-            th:first-child, td:first-child { position: static; width: auto; }
+            .container { box-shadow: none; border: none; width: 100%; padding: 0; }
+            
+            /* Force the blue header background in print */
+            th { 
+                background-color: #2c3e50 !important; 
+                color: white !important; 
+                -webkit-print-color-adjust: exact; 
+                print-color-adjust: exact;
+            }
+            
+            /* Remove sticky behavior for paper */
+            th:first-child, td:first-child { 
+                position: static; 
+                box-shadow: none; 
+                border-right: 1px solid #eee; 
+                background-color: transparent !important;
+            }
+            
+            .task-name { background-color: #f8f9fa !important; -webkit-print-color-adjust: exact; }
+            tr:nth-child(even) td { background-color: #f2f2f2 !important; -webkit-print-color-adjust: exact; }
         }
     </style>
 </head>
 <body>
-    <button class="print-btn" onclick="window.print()">📥 Imprimer / PDF</button>
+    <button class="print-btn" onclick="window.print()">📥 Imprimer / Enregistrer en PDF</button>
     <div class="container">
+        <div class="header-flex">
+            <h2>Anjara Fanompoana isan-tsabata</h2>
+            <div id="timestamp"></div>
+        </div>
         <div class="table-wrapper">
             <table id="scheduleTable"></table>
         </div>
@@ -55,7 +88,12 @@
                 let tableHTML = "";
                 rows.forEach((row, index) => {
                     const cleanRow = row.filter(cell => cell.replace(/"/g, '').trim() !== "");
-                    if (cleanRow.length < 2) return;
+                    if (cleanRow.length < 2) {
+                        if (cleanRow[0] && cleanRow[0].toLowerCase().includes("mis à jour")) {
+                            document.getElementById("timestamp").innerText = cleanRow[0].replace(/"/g, '');
+                        }
+                        return;
+                    }
                     tableHTML += "<tr>";
                     cleanRow.forEach((cell, i) => {
                         const tag = index === 0 ? "th" : "td";
