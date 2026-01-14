@@ -12,12 +12,12 @@
         h2 { color: #2c3e50; margin: 0 0 5px 0; text-transform: uppercase; font-size: 1.6rem; }
         #timestamp { font-size: 0.9rem; color: #7f8c8d; font-style: italic; }
 
-        /* TABLE WRAPPER */
+        /* TABLE WRAPPER & STICKY SETTINGS */
         .table-wrapper { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; position: relative; }
         table { width: 100%; border-collapse: separate; border-spacing: 0; min-width: 700px; }
         
-        /* GENERAL HEADER STYLE */
-        th { background: #2c3e50 !important; color: white !important; padding: 15px; border-bottom: 2px solid #34495e; font-size: 0.85rem; -webkit-print-color-adjust: exact; }
+        /* HEADER STYLE */
+        th { background: #2c3e50 !important; color: white !important; padding: 15px; border-bottom: 2px solid #34495e; font-size: 0.85rem; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
         
         /* STICKY COLUMN (Data Rows) */
         td:first-child {
@@ -30,14 +30,14 @@
             box-shadow: 2px 0 5px rgba(0,0,0,0.05);
         }
 
-        /* THE CORNER FIX (Top-Left Cell) */
+        /* STICKY CORNER (Top-Left Cell) */
         th:first-child {
             position: sticky;
             left: 0;
-            z-index: 12; /* Highest layer */
+            z-index: 12;
             width: 135px;
-            background-color: #2c3e50 !important; /* Force dark background */
-            color: white !important; /* Force white text */
+            background-color: #2c3e50 !important;
+            color: white !important;
             border-right: 2px solid #3498db;
         }
 
@@ -45,10 +45,26 @@
         .task-name { font-weight: bold; text-align: left !important; color: #2c3e50; }
         tr:nth-child(even) td { background-color: #fafbfc; }
 
+        /* PRINT STYLES - FIXING THE WHITE CELL */
         @media print {
             .print-btn { display: none; }
-            th:first-child, td:first-child { position: static; width: auto; background-color: transparent !important; color: inherit; border-right: 1px solid #eee; box-shadow: none; }
-            th { background-color: #2c3e50 !important; color: white !important; -webkit-print-color-adjust: exact; }
+            .container { box-shadow: none; border: none; padding: 0; width: 100%; }
+            
+            /* Remove Sticky for Print */
+            th:first-child, td:first-child { position: static; box-shadow: none; width: auto; }
+
+            /* Ensure ALL headers are dark blue */
+            th, th:first-child { 
+                background-color: #2c3e50 !important; 
+                color: white !important; 
+                -webkit-print-color-adjust: exact; 
+                print-color-adjust: exact;
+                border: 1px solid #34495e;
+            }
+
+            /* Data column should be grey/white, not transparent */
+            td:first-child { background-color: #f8f9fa !important; }
+            tr:nth-child(even) td { background-color: #f2f2f2 !important; }
         }
     </style>
 </head>
