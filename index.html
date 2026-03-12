@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="mg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Anjara Fanompoana isan-tSabata</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --accent: #2980b9;
+            --date-bg: #ebf2f7;
+            --bg: #f4f7f9;
+        }
+        * { box-sizing: border-box; }
+        body {
+            font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg);
+            margin: 0;
+            padding: 15px;
+            color: #333;
+        }
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            color: var(--primary);
+            font-size: 1.8rem;
+            margin: 10px 0 20px 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .pdf-section {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .download-btn {
+            background-color: var(--primary);
+            color: white;
+            padding: 14px 28px;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: bold;
+            display: inline-block;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            font-size: 1rem;
+        }
+        /* Date Cards */
+        .date-card {
+            background: white;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+            border: 1px solid #e1e8ed;
+            /* Remove overflow: hidden if it's there */
+        }
+        .date-header {
+            background: var(--date-bg);
+            color: var(--accent);
+            padding: 15px;
+            text-align: center;
+            font-weight: 800;
+            font-size: 1.25rem;
+            border-bottom: 2px solid #d1dce5;
+            
+            /* --- ADD THESE TWO LINES --- */
+            position: -webkit-sticky; /* For Safari/iPhone Support */
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            /* --------------------------- */
+        }
+        .task-list {
+            padding: 10px 20px;
+        }
+        .assignment-row {
+            display: flex;
+            padding: 15px 0; /* More spacing for thumbs */
+            border-bottom: 1px solid #f0f0f0;
+            align-items: center;
+        }
+        .assignment-row:last-child {
+            border-bottom: none;
+        }
+        .task-name {
+            flex: 1;
+            font-size: 0.95rem; /* Larger Font */
+            color: #7f8c8d;
+            font-weight: 500;
+        }
+        .member-name {
+            flex: 1.5;
+            color: var(--primary);
+            font-weight: 800; /* Extra Bold */
+            font-size: 1.1rem; /* Larger Font */
+            text-align: right;
+        }
+        #loading { text-align: center; padding: 50px; color: #999; font-style: italic; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>ANJARA FANOMPOANA ISAN-TSABATA</h1>
+        
+        <div class="pdf-section">
+            <a href="fandaharana.pdf" target="_blank" class="download-btn">
+                📥 Haka ny PDF (Pirinty)
+            </a>
+        </div>
+
+        <div id="content">
+            <div id="loading">Eo am-pamoahana ny fandaharana...</div>
+        </div>
+    </div>
+
+<script>
+    const csvUrl = 'schedule.csv?v=' + Date.now();
+
+    async function renderCleanPlanning() {
+        const content = document.getElementById('content');
+        try {
+            const res = await fetch(csvUrl);
+            if (!res.ok) throw new Error("Tsy hita ny schedule.csv");
+
+            // Standard way to read UTF-8 from a fetch request
+            const text = await res.text();
+            
+            // 1. Clean up quotes and trim
+            const cleanText = text.replace(/"/g, ''); 
+            
+            const rows = cleanText.split(/\r?\n/)
+                                 .filter(r => r.trim() !== "")
+                                 .map(r => r.split(',').map(c => c.trim()));
+
+            if (rows.length < 2) return;
+
+            const headers = rows[0]; 
+            const tasks = rows.slice(1);
+
+            content.innerHTML = '';
+
+            for (let col = 1; col < headers.length; col++) {
+                if (!headers[col]) continue;
+
+                const card = document.createElement('div');
+                card.className = 'date-card';
+                
+                let html = `<div class="date-header">${headers[col]}</div>`;
+                html += `<div class="task-list">`;
+
+                tasks.forEach(row => {
+                    const taskName = row[0];
+                    const member = row[col] || "---";
+                    
+                    if (taskName) {
+                        html += `
+                            <div class="assignment-row">
+                                <span class="task-name">${taskName}</span>
+                                <span class="member-name">${member}</span>
+                            </div>`;
+                    }
+                });
+
+                html += `</div>`;
+                card.innerHTML = html;
+                content.appendChild(card);
+            }
+        } catch (err) {
+            console.error(err);
+            content.innerHTML = "<p style='text-align:center;'>Miala tsiny, misy olana ny fampisehoana...</p>";
+        }
+    }
+    renderCleanPlanning();
+</script>
+</body>
+</html>
